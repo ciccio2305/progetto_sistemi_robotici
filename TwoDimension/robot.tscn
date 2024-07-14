@@ -214,3 +214,5 @@ shape = SubResource("ConvexPolygonShape3D_ubexx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
 node_a = NodePath("../../Body")
 node_b = NodePath("..")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
