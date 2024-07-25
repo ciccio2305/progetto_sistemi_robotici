@@ -24,6 +24,8 @@ var total_time=0
 const PID = preload("res://PID.gd")
 var punto =preload("res://punto.tscn")
 
+signal start
+
 var my_pid_angular
 var my_pid_torque
 
@@ -64,15 +66,14 @@ func _ready():
 	prec_direction=1
 	list_of_point.append([$Body.global_position.x,$Body.global_position.y])
 	
-	$HTTPRequest.request_completed.connect(_on_request_completed)
-	$HTTPRequest.request("http://127.0.0.1:5000/get_path")
+	
 
 func _on_request_completed(result, response_code, headers, body):
 	var json = JSON.parse_string(body.get_string_from_utf8())
-	
+	print(json)
 	print("here")
 	for x in json["points"]:
-		list_of_point.append([x["x"],x["y"]])
+		list_of_point.append([x[0]/100 * 18 -9,x[1]/100 * 18 -9])
 	
 	for x in list_of_point:
 		var new_punto=punto.instantiate()
@@ -81,9 +82,11 @@ func _on_request_completed(result, response_code, headers, body):
 		new_punto.global_position.x=x[0]
 		new_punto.global_position.y=0.117
 		new_punto.global_position.z=x[1]
-
+	print(list_of_point)
+	#self.global_position.x=list_of_point[1][0]
+	#self.global_position.z=list_of_point[1][1]
 	stay_still=false 
-	current_target=1
+	current_target=2
 func _input(event):
 	if event is InputEventKey:
 		match event.keycode:
@@ -182,7 +185,7 @@ func _process(_delta):
 	
 	var distance=sqrt(dx * dx + dz * dz)
 	
-	if(distance<0.1):
+	if(distance<0.3):
 		current_target=current_target+1
 		if current_target==len(list_of_point):
 			print("finito")
@@ -209,3 +212,10 @@ func _process(_delta):
 	prec_direction=direction
 func _integrate_forces(state):
 	pass
+
+
+func _on_world_start():
+	list_of_point.append([$Body.global_position.x,$Body.global_position.y])
+	$HTTPRequest.request_completed.connect(_on_request_completed)
+	$HTTPRequest.request("http://127.0.0.1:5000/get_path")
+	pass # Replace with function body.
