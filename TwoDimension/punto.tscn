@@ -8,3 +8,8 @@ lightmap_size_hint = Vector2i(17, 9)
 [node name="punto" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 mesh = SubResource("SphereMesh_qwksa")
+
+[node name="Label3D" type="Label3D" parent="punto"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.91522, 0)
+pixel_size = 0.01
+text = "nome 11111"

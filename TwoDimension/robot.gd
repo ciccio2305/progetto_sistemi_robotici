@@ -48,16 +48,17 @@ func _ready():
 	
 	motor_left=$LeftWheel/LeftMotor
 	motor_right=$RightWheel/RightMotor
-	
+	#non viene utilizzato 
 	my_pid_angular=PID.new()
 	my_pid_angular.create_pid(0.3, 0, 0, PI/4)
+	
 	my_pid_torque=PID.new()
 	my_pid_torque.create_pid(1,0.05, 0, 0.2)
 	
 	my_proportional_linear=PID.new()
 	my_proportional_linear.create_pid(0.5,0,0,1)
 	my_proportional_angular=PID.new()
-	my_proportional_angular.create_pid(1, 0, 0, PI/4)
+	my_proportional_angular.create_pid(0.5, 0, 0, PI/6)
 	
 	prec_x=$Body.position.x
 	prec_z=$Body.position.z
@@ -72,9 +73,10 @@ func _on_request_completed(result, response_code, headers, body):
 	var json = JSON.parse_string(body.get_string_from_utf8())
 	print(json)
 	print("here")
+	list_of_point=[]
 	for x in json["points"]:
-		list_of_point.append([x[0]/100 * 18 -9,x[1]/100 * 18 -9])
-	
+		list_of_point.append([x[0],x[1]])
+	var index=0
 	for x in list_of_point:
 		var new_punto=punto.instantiate()
 		self.add_child(new_punto)
@@ -82,11 +84,15 @@ func _on_request_completed(result, response_code, headers, body):
 		new_punto.global_position.x=x[0]
 		new_punto.global_position.y=0.117
 		new_punto.global_position.z=x[1]
+		new_punto.find_child("Label3D").set_text("node"+str(index))
+		index=index+1
 	print(list_of_point)
 	#self.global_position.x=list_of_point[1][0]
 	#self.global_position.z=list_of_point[1][1]
 	stay_still=false 
-	current_target=2
+	current_target=1
+	$HTTPRequest2.request("http://127.0.0.1:5000/update_index")
+	
 func _input(event):
 	if event is InputEventKey:
 		match event.keycode:
@@ -117,12 +123,8 @@ func rotate_front_steer(degree):
 	# Converti la rotazione desiderata in un Basis (matrice di rotazione)
 	var desired_rotation_basis = Basis(Vector3(0,1,0),degree)
 	var desired_rotation_basis_outer = Basis(Vector3(0,1,0), atan(0.290/(R+0.2)) )
-	# Ottieni la trasformazione del nodo padre
+	
 	var parent_transform = parent.global_transform
-	#
-	#print("inner: ",degree/PI*180)
-	#print("outer: ", atan(0.290/(R+0.2))/PI*180)
-	# Imposta la rotazione del nodo figlio combinando la rotazione del nodo padre con quella desiderata
 	
 	if(degree>0):
 		left.global_transform.basis = parent_transform.basis * desired_rotation_basis
@@ -210,6 +212,9 @@ func _process(_delta):
 	counter_speed=-counter_speed
 	
 	prec_direction=direction
+	if stay_still:
+		counter_speed=0
+		counter_degree=0
 func _integrate_forces(state):
 	pass
 

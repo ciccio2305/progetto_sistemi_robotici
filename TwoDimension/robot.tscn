@@ -216,3 +216,5 @@ node_a = NodePath("../../Body")
 node_b = NodePath("..")
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="HTTPRequest2" type="HTTPRequest" parent="."]

@@ -1,14 +1,32 @@
 from flask import Flask, request
 import os
+import runs_for_path_finding as paths
 
 app = Flask(__name__)
+global index
+index=0
+global number_of_path
+number_of_path=7
+
+@app.route('/get_obstacles')
+def get_obstacles():
+    global index
+    circles_center_and_radius=paths.get_i_run(index%number_of_path+1)()[1]
+    print(circles_center_and_radius)
+    return {"points": circles_center_and_radius}
+
+@app.route('/update_index')
+def update_index():
+    global index
+    index+=1
+    return {"ok": "ok"}
+
 
 @app.route('/get_path')
 def get_path():
-
-    # ritorna una lista di punti sotto forma di json
-    list_of_point=[{"x": 1, "y": 0}, {"x": 2, "y": 2}, {"x": -9, "y": -9}]
-    return {"points": list_of_point}
+    global index
+    shortest_path=paths.get_i_run(index%number_of_path+1)()[0]
+    return {"points": shortest_path}
 
 @app.route('/post_data', methods=['POST'])
 def post_data():

@@ -112,7 +112,7 @@ mesh = SubResource("BoxMesh_e23d5")
 shape = SubResource("ConcavePolygonShape3D_mvldq")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.995885, -0.0157339, -0.0892483, 0.043209, 0.948105, 0.315007, 0.0796605, -0.317567, 0.944884, -0.292576, 0.751582, 1.00979)
+transform = Transform3D(0.995885, -0.0157339, -0.0892483, 0.0398239, 0.960611, 0.275029, 0.0814056, -0.277452, 0.957285, -0.292576, 6.69701, 8.42196)
 fov = 94.172
 script = ExtResource("1_c5dic")
 
